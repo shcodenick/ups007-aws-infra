@@ -1,0 +1,72 @@
+name: Terraform Plan & Apply
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
+  push:
+    branches:
+      - main
+
+permissions:
+      id-token: write # This is required for aws oidc connection
+      contents: read # This is required for actions/checkout
+      pull-requests: write # This is required for gh bot to comment PR
+
+env:
+  REGION: ${{ vars.AWS_REGION }}
+  OIDC_ROLE: ${{ vars.AWS_OIDC_ROLE }}
+  STATE_BUCKET: ${{ vars.AWS_STATE_BUCKET }}
+  STATE_BUCKET_KEY: ${{ vars.AWS_STATE_BUCKET_KEY }}
+
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials from AWS account
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ env.AWS_OIDC_ROLE }}
+        aws-region: ${{ env.REGION }}
+        role-session-name: GitHub-OIDC-TERRAFORM
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.2.5
+
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
+
+    - name: Terraform Init
+      id: init
+      env:
+        AWS_BUCKET_NAME: ${{ env.AWS_TF_STATE_BUCKET_NAME }}
+        AWS_BUCKET_KEY_NAME: ${{ env.STATE_BUCKET_KEY }}
+      run: terraform init -backend-config="bucket=${env.STATE_BUCKET}" -backend-config="key=${env.STATE_BUCKET_KEY}" -backend-config="region=${env.REGION}"
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -no-color
+      continue-on-error: true
