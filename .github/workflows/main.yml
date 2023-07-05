@@ -76,8 +76,8 @@ jobs:
     - name: Terraform Plan
       id: plan
       env:
-        TF_VAR_PRE = ${{ vars.TF_VAR_PRE }}
-        TF_VAR_OWNER = ${{ vars.TF_VAR_OWNER }}
-        TF_VAR_AWS_REGION = ${{ vars.TF_VAR_AWS_REGION }}
-        TF_VAR_AWS_PA_USER = ${{ vars.TF_VAR_AWS_PA_USER }}
+        TF_VAR_PRE: ${{ vars.TF_VAR_PRE }}
+        TF_VAR_OWNER: ${{ vars.TF_VAR_OWNER }}
+        TF_VAR_AWS_REGION: ${{ vars.TF_VAR_AWS_REGION }}
+        TF_VAR_AWS_PA_USER: ${{ vars.TF_VAR_AWS_PA_USER }}
       run: terraform plan -no-color
