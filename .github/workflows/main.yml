@@ -65,6 +65,10 @@ jobs:
       #  REGION: ${{ env.REGION }}
       run: terraform init -backend-config="bucket=${STATE_BUCKET}" -backend-config="key=${STATE_BUCKET_KEY}" -backend-config="region=${REGION}" -backend-config="encrypt=true" -backend-config="dynamodb_table=${STATE_TABLE}"
 
+    - name: Terraform Enter Workspace infra
+      id: infra
+      run: terraform workspace select infra
+
     - name: Terraform Validate
       id: validate
       run: terraform validate -no-color
