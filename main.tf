@@ -349,3 +349,27 @@ resource "aws_db_subnet_group" "rds_sn_group" {
     description = "RDS sn group"
     subnet_ids = ["${aws_subnet.sn_prv_az1.id}", "${aws_subnet.sn_prv_az2.id}"]
 }
+
+# RDS
+
+resource "aws_db_instance" "rds" {
+  depends_on = [aws_db_subnet_group.rds_sn_group]
+
+  allocated_storage    = 20
+  db_name              = "crud"
+  engine               = "postgres"
+  engine_version       = "14.3"
+  instance_class       = "db.t3.micro"
+  username             = "postgres"
+  password             = "postgres"
+  port                 = 5432
+  skip_final_snapshot  = true
+  availability_zone = "${var.AWS_REGION}a"
+  db_subnet_group_name = aws_db_subnet_group.rds_sn_group.name
+  vpc_security_group_ids = [aws_security_group.rds_access.id]
+
+  tags = {
+    Name = "${var.PRE}rds"
+    Owner = var.OWNER
+  }
+}
