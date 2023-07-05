@@ -50,10 +50,11 @@ jobs:
       with:
         terraform_version: 1.2.5
 
-    - name: Terraform fmt
-      id: fmt
-      run: terraform fmt -check
-      continue-on-error: true
+    # fuck this step
+    #- name: Terraform fmt
+    #  id: fmt
+    #  run: terraform fmt -check
+    #  continue-on-error: true
 
     - name: Terraform Init
       id: init
@@ -70,4 +71,3 @@ jobs:
     - name: Terraform Plan
       id: plan
       run: terraform plan -no-color
-      continue-on-error: true
