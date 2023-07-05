@@ -22,7 +22,7 @@ permissions:
       pull-requests: write # This is required for gh bot to comment PR
 
 env:
-  TF_LOG: DEBUG
+  TF_LOG: INFO
   REGION: ${{ vars.AWS_REGION }}
   OIDC_ROLE: ${{ vars.AWS_OIDC_ROLE }}
   STATE_BUCKET: ${{ vars.AWS_STATE_BUCKET }}
