@@ -373,3 +373,109 @@ resource "aws_db_instance" "rds" {
     Owner = var.OWNER
   }
 }
+
+# Load Balancer + stuff
+
+resource "aws_lb" "alb" {
+  name               = "${var.PRE}alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_access.id]
+  subnets            = [aws_subnet.sn_pub_az1.id, aws_subnet.sn_pub_az2.id]
+
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "${var.PRE}alb"
+    Owner = var.OWNER
+  }
+}
+
+resource "aws_lb_target_group" "db_app_tg" {
+  name        = "${var.PRE}tg-db-app"
+  port        = 8000
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = aws_vpc.main_vpc.id
+}
+
+resource "aws_lb_target_group" "s3_app_tg" {
+  name        = "${var.PRE}tg-s3-app"
+  port        = 5000
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = aws_vpc.main_vpc.id
+}
+
+resource "aws_lb_listener" "alb_listener" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.db_app_tg.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "db_app_rule" {
+  listener_arn = aws_lb_listener.alb_listener.arn
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.db_app_tg.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/crud/*"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "s3_app_rule" {
+  listener_arn = aws_lb_listener.alb_listener.arn
+  priority     = 99
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.s3_app_tg.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/s3/*"]
+    }
+  }
+}
+
+
+# ECR
+
+resource "aws_ecr_repository" "db_app_repo" {
+  name = "${var.PRE}db-app-repo"
+  tags = {
+    Name = "${var.PRE}db-app-repo"
+    Owner = var.OWNER
+  }
+}
+
+resource "aws_ecr_repository" "s3_app_repo" {
+  name = "${var.PRE}s3-app-repo"
+  tags = {
+    Name = "${var.PRE}s3-app-repo"
+    Owner = var.OWNER
+  }
+}
+
+# ECS
+
+resource "aws_ecs_cluster" "ecs_cluster" {
+  name = "${var.PRE}ecs-cluster"
+  tags = {
+    Name = "${var.PRE}ecs-cluster"
+    Owner = var.OWNER
+  }
+}
+
