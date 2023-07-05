@@ -12,3 +12,7 @@ variable AWS_REGION {
   type = string
   default = "us-east-1"
 }
+variable AWS_PA_USER {
+  type = string
+  description = "programmatic access user's arn"
+}
