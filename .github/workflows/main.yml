@@ -57,10 +57,11 @@ jobs:
 
     - name: Terraform Init
       id: init
-      env:
-        AWS_BUCKET_NAME: ${{ env.AWS_TF_STATE_BUCKET_NAME }}
-        AWS_BUCKET_KEY_NAME: ${{ env.STATE_BUCKET_KEY }}
-      run: terraform init -backend-config="bucket=${env.STATE_BUCKET}" -backend-config="key=${env.STATE_BUCKET_KEY}" -backend-config="region=${env.REGION}"
+      #env:
+      #  STATE_BUCKET: ${{ env.STATE_BUCKET }}
+      #  STATE_BUCKET_KEY: ${{ env.STATE_BUCKET_KEY }}
+      #  REGION: ${{ env.REGION }}
+      run: terraform init -backend-config="bucket=${STATE_BUCKET}" -backend-config="key=${STATE_BUCKET_KEY}" -backend-config="region=${REGION}"
 
     - name: Terraform Validate
       id: validate
