@@ -26,6 +26,7 @@ env:
   OIDC_ROLE: ${{ vars.AWS_OIDC_ROLE }}
   STATE_BUCKET: ${{ vars.AWS_STATE_BUCKET }}
   STATE_BUCKET_KEY: ${{ vars.AWS_STATE_BUCKET_KEY }}
+  STATE_TABLE: ${{ vars.AWS_STATE_TABLE }}
 
 
 jobs:
@@ -62,7 +63,7 @@ jobs:
       #  STATE_BUCKET: ${{ env.STATE_BUCKET }}
       #  STATE_BUCKET_KEY: ${{ env.STATE_BUCKET_KEY }}
       #  REGION: ${{ env.REGION }}
-      run: terraform init -backend-config="bucket=${STATE_BUCKET}" -backend-config="key=${STATE_BUCKET_KEY}" -backend-config="region=${REGION}"
+      run: terraform init -backend-config="bucket=${STATE_BUCKET}" -backend-config="key=${STATE_BUCKET_KEY}" -backend-config="region=${REGION} -backend-config="encrypt=true" -backend-config="dynamodb_table=${STATE_TABLE}
 
     - name: Terraform Validate
       id: validate
