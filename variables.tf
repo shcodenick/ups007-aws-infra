@@ -16,3 +16,7 @@ variable AWS_PA_USER {
   type = string
   description = "programmatic access user's arn"
 }
+variable AWS_RDS_PASS {
+  type = string
+  description = "password to postgres"
+}

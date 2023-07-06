@@ -80,7 +80,7 @@ jobs:
         TF_VAR_OWNER: ${{ vars.TF_VAR_OWNER }}
         TF_VAR_AWS_REGION: ${{ vars.TF_VAR_AWS_REGION }}
         TF_VAR_AWS_PA_USER: ${{ vars.TF_VAR_AWS_PA_USER }}
+        TF_VAR_AWS_RDS_PASS: ${{ secrets.TF_VAR_AWS_RDS_PASS }}
       run: |
         terraform plan -no-color
         terraform apply -auto-approve -input=false
-

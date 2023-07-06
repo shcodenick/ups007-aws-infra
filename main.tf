@@ -361,7 +361,7 @@ resource "aws_db_instance" "rds" {
   engine_version       = "14.3"
   instance_class       = "db.t3.micro"
   username             = "postgres"
-  password             = "postgres"
+  password             = var.AWS_RDS_PASS
   port                 = 5432
   skip_final_snapshot  = true
   availability_zone = "${var.AWS_REGION}a"
