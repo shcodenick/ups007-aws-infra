@@ -9,3 +9,4 @@ etc.
 set -a; . .env; set +a
 
 3. terraform init -backend-config="bucket=${TF_VAR_STATE_BUCKET}" -backend-config="key=${TF_VAR_STATE_KEY}" -backend-config="region=${TF_VAR_AWS_REGION}" -backend-config="dynamodb_table=${TF_VAR_STATE_TABLE}"
+4. terraform workspace new infra
