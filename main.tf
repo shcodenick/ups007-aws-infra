@@ -135,6 +135,10 @@ resource "aws_security_group" "s3_app_access" {
   }
 }
 
+output "s3_app_access_sg_id" {
+  value = aws_security_group.s3_app_access.id
+}
+
 resource "aws_security_group" "db_app_access" {
   name        = "${var.PRE}sg-db-app"
   description = "Allow access on port 8000"
@@ -407,6 +411,10 @@ resource "aws_lb" "alb" {
   }
 }
 
+output "alb_dns_name" {
+  value = aws_lb.alb.dns_name
+}
+
 resource "aws_lb_target_group" "db_app_tg" {
   name        = "${var.PRE}tg-db-app"
   port        = 8000
@@ -425,6 +433,10 @@ resource "aws_lb_target_group" "s3_app_tg" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = aws_vpc.main_vpc.id
+}
+
+output "s3_app_tg_arn" {
+  value = aws_lb_target_group.s3_app_tg.arn
 }
 
 resource "aws_lb_listener" "alb_listener" {
@@ -491,6 +503,10 @@ resource "aws_ecr_repository" "s3_app_repo" {
     Name = "${var.PRE}s3-app-repo"
     Owner = var.OWNER
   }
+}
+
+output "s3_app_repo_url" {
+  value = aws_ecr_repository.s3_app_repo.repository_url
 }
 
 # ECS
