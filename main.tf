@@ -161,6 +161,10 @@ resource "aws_security_group" "db_app_access" {
   }
 }
 
+output "db_app_access_sg_id" {
+  value = aws_security_group.db_app_access.id
+}
+
 resource "aws_security_group" "rds_access" {
   name        = "${var.PRE}sg-rds"
   description = "Allow access on port 5432 to db app sg"
@@ -264,6 +268,10 @@ resource "aws_subnet" "sn_prv_az1" {
   }
 }
 
+output "sn_prv_az1_id" {
+  value = aws_subnet.sn_prv_az1.id
+}
+
 resource "aws_subnet" "sn_prv_az2" {
   vpc_id     = aws_vpc.main_vpc.id
   cidr_block = "10.0.4.0/24"
@@ -273,6 +281,10 @@ resource "aws_subnet" "sn_prv_az2" {
     Name = "${var.PRE}sn-prv-az2"
     Owner = var.OWNER
   }
+}
+
+output "sn_prv_az2_id" {
+  value = aws_subnet.sn_prv_az2.id
 }
 
 resource "aws_route_table_association" "sn_pub_az1_rt_assoc" {
@@ -374,6 +386,10 @@ resource "aws_db_instance" "rds" {
   }
 }
 
+output "rds_address" {
+  value = aws_db_instance.rds.address
+}
+
 # Load Balancer + stuff
 
 resource "aws_lb" "alb" {
@@ -397,6 +413,10 @@ resource "aws_lb_target_group" "db_app_tg" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = aws_vpc.main_vpc.id
+}
+
+output "db_app_tg_arn" {
+  value = aws_lb_target_group.db_app_tg.arn
 }
 
 resource "aws_lb_target_group" "s3_app_tg" {
@@ -461,6 +481,10 @@ resource "aws_ecr_repository" "db_app_repo" {
   }
 }
 
+output "db_app_repo_url" {
+  value = aws_ecr_repository.db_app_repo.repository_url
+}
+
 resource "aws_ecr_repository" "s3_app_repo" {
   name = "${var.PRE}s3-app-repo"
   tags = {
@@ -479,6 +503,10 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   }
 }
 
+output "cluster_id" {
+  value = aws_ecs_cluster.ecs_cluster.id
+}
+
 resource "aws_iam_role" "ecs_task_exec_role" {
   name               = "${var.PRE}ecs-task-exec-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
@@ -486,6 +514,10 @@ resource "aws_iam_role" "ecs_task_exec_role" {
     Name = "${var.PRE}ecs-task-exec-role"
     Owner = var.OWNER
   }
+}
+
+output "ecs_task_exec_role_arn" {
+  value = aws_iam_role.ecs_task_exec_role.arn
 }
 
 data "aws_iam_policy_document" "assume_role_policy" {
