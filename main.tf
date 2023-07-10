@@ -477,7 +477,7 @@ resource "aws_lb_listener_rule" "s3_app_rule" {
 
   condition {
     path_pattern {
-      values = ["/s3/*"]
+      values = ["/s3*"]
     }
   }
 }
