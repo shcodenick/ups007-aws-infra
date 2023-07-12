@@ -559,7 +559,7 @@ resource "aws_iam_role_policy_attachment" "ecsECRAccess_policy" {
 
 
 resource "aws_service_discovery_private_dns_namespace" "namespace" {
-    name        = "${var.PRE}.net"
+    name        = "${var.PRE}.local"
     description = "prv dns namespace for ups007"
     vpc         = aws_vpc.main_vpc.id
 }
