@@ -556,3 +556,14 @@ resource "aws_iam_role_policy_attachment" "ecsECRAccess_policy" {
   role       = aws_iam_role.ecs_task_exec_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
 }
+
+
+resource "aws_service_discovery_private_dns_namespace" "namespace" {
+    name        = "${var.PRE}.net"
+    description = "prv dns namespace for ups007"
+    vpc         = aws_vpc.main_vpc.id
+}
+
+output "namespace_id" {
+  value = aws_service_discovery_private_dns_namespace.namespace.id
+}
